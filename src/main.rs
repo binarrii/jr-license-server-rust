@@ -19,3 +19,9 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
+
+#[cfg(not(unix))]
+fn main() -> std::io::Result<()> {
+    println!("not supported");
+    Ok(())
+}
