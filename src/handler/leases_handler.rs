@@ -1,16 +1,16 @@
-use actix_web::{web, HttpResponse};
+use actix_web::{HttpResponse, web};
 use serde::{Deserialize, Serialize};
 
 // POST /jrebel/leases
 pub async fn lease(params: web::Form<FormData>) -> HttpResponse {
     if let None = params.username {
-        return HttpResponse::Forbidden().finish();
+        return HttpResponse::BadRequest().finish();
     }
     if let None = params.randomness {
-        return HttpResponse::Forbidden().finish();
+        return HttpResponse::BadRequest().finish();
     }
     if let None = params.guid {
-        return HttpResponse::Forbidden().finish();
+        return HttpResponse::BadRequest().finish();
     }
 
     return HttpResponse::Ok().json(RespData {
