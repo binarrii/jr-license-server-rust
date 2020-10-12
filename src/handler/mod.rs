@@ -1,6 +1,4 @@
-use actix_web::web::Data;
 use serde::Serialize;
-use serde_json::json;
 
 #[macro_use]
 pub mod macros {

@@ -1,5 +1,4 @@
 use actix_web::web;
-use log::info;
 
 use crate::handler::*;
 
