@@ -2,6 +2,23 @@ use actix_web::web::Data;
 use serde::Serialize;
 use serde_json::json;
 
+#[macro_use]
+pub mod macros {
+    #[macro_export]
+    macro_rules! success {
+        ($data:expr) => {
+            crate::handler::Resp { code: 0, msg: "success", data: Some($data) }
+        };
+    }
+
+    #[macro_export]
+    macro_rules! failure {
+        ($msg:expr) => {
+            crate::handler::Resp::<()> { code: -1, msg: $msg, data: None }
+        };
+    }
+}
+
 pub mod index_handler;
 pub mod leases_handler;
 pub mod ticket_handler;
@@ -13,12 +30,4 @@ pub struct Resp<T: Serialize> {
     code: i8,
     msg: &'static str,
     data: Option<T>,
-}
-
-fn success<T: Serialize>(d: T) -> Resp<T> {
-    Resp { code: 0, msg: "ok", data: Some(d) }
-}
-
-fn failure(s: &'static str) -> Resp<()> {
-    Resp { code: -1, msg: s, data: None }
 }
