@@ -3,46 +3,13 @@ use actix_web::web;
 use crate::handler::*;
 
 pub fn config_services(scfg: &mut web::ServiceConfig) {
-    scfg.service(web::resource("/").route(web::get().to(index_handler::index)))
-        .service(
-            web::scope("/jrebel")
-                .service(
-                    web::resource("/leases")
-                        .route(web::post().to(leases_handler::lease))
-                )
-                .service(
-                    web::resource("/leases/1")
-                        .route(web::post().to(leases_handler::lease))
-                )
-                .service(
-                    web::resource("/validate-connection")
-                        .route(web::post().to(leases_handler::lease))
-                )
-        )
-        .service(
-            web::scope("/agent")
-                .service(
-                    web::resource("/leases")
-                        .route(web::post().to(leases_handler::lease))
-                )
-                .service(
-                    web::resource("/leases/1")
-                        .route(web::post().to(leases_handler::lease))
-                )
-        )
-        .service(
-            web::scope("/rpc")
-                .service(
-                    web::resource("/obtainTicket.action")
-                        .route(web::post().to(leases_handler::lease))
-                )
-                .service(
-                    web::resource("/releaseTicket.action")
-                        .route(web::post().to(leases_handler::lease))
-                )
-                .service(
-                    web::resource("/ping.action")
-                        .route(web::post().to(leases_handler::lease))
-                )
-        );
+    scfg.route("/", web::get().to(index_handler::index))
+        .route("/jrebel/leases", web::post().to(leases_handler::lease))
+        .route("/jrebel/leases/1", web::post().to(leases_handler::lease))
+        .route("/jrebel/validate-connection", web::post().to(leases_handler::lease))
+        .route("/agent/leases", web::post().to(leases_handler::lease))
+        .route("/agent/leases/1", web::post().to(leases_handler::lease))
+        .route("/rpc/obtainTicket.action", web::post().to(leases_handler::lease))
+        .route("/rpc/releaseTicket.action", web::post().to(leases_handler::lease))
+        .route("/rpc/ping.action", web::post().to(leases_handler::lease));
 }
