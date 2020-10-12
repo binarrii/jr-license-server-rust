@@ -1,5 +1,16 @@
 use actix_web::{HttpResponse, web};
+use serde::Deserialize;
 use serde_json::json;
+
+#[allow(non_snake_case)]
+#[derive(Deserialize)]
+pub struct FormData {
+    username: Option<String>,
+    randomness: Option<String>,
+    guid: Option<String>,
+    offline: bool,
+    clientTime: String,
+}
 
 // POST /jrebel/leases
 pub async fn lease(params: web::Form<FormData>) -> HttpResponse {
@@ -13,35 +24,25 @@ pub async fn lease(params: web::Form<FormData>) -> HttpResponse {
         return HttpResponse::Forbidden().finish();
     }
 
-    return HttpResponse::Ok().json(json! {
-        "company": params.username.as_deref().unwrap_or("").to_string(),
+    return HttpResponse::Ok().json(json!({
+        "company": params.username,
         "evaluationLicense": false,
-        "groupType": "managed".to_string(),
+        "groupType": "managed",
         "id": 1,
         "licenseType": 1,
-        "licenseValidFrom": 1490544001000,
-        "licenseValidUntil": 1691839999000,
-        "offline": params.offline.to_string(),
-        "orderId": "".to_string(),
-        "seatPoolType": "standalone".to_string(),
-        "serverGuid": "a1b4aea8-b031-4302-b602-670a990272cb".to_string(),
-        "serverProtocolVersion": "1.1".to_string(),
-        "serverRandomness": "H2ulzLlh7E0=".to_string(),
-        "serverVersion": "3.2.4".to_string(),
-        "signature": "".to_string(), // TODO
-        "statusCode": "SUCCESS".to_string(),
-        "validFrom": None,
-        "validUntil": None,
-        "zeroIds": [],
-    });
-}
-
-#[allow(non_snake_case)]
-#[derive(Deserialize)]
-pub struct FormData {
-    username: Option<String>,
-    randomness: Option<String>,
-    guid: Option<String>,
-    offline: bool,
-    clientTime: String,
+        "licenseValidFrom": 1490544001000u64,
+        "licenseValidUntil": 1691839999000u64,
+        "offline": params.offline,
+        "orderId": "",
+        "seatPoolType": "standalone",
+        "serverGuid": "a1b4aea8-b031-4302-b602-670a990272cb",
+        "serverProtocolVersion": "1.1",
+        "serverRandomness": "H2ulzLlh7E0=",
+        "serverVersion": "3.2.4",
+        "signature": "", // TODO
+        "statusCode": "SUCCESS",
+        "validFrom": Option::<String>::None,
+        "validUntil": Option::<String>::None,
+        "zeroIds": []
+    }));
 }
