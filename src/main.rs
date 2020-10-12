@@ -4,7 +4,7 @@ mod config;
 mod handler;
 
 #[actix_web::main]
-#[cfg(unix)]
+// #[cfg(unix)]
 async fn main() -> std::io::Result<()> {
     ::std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
@@ -15,7 +15,7 @@ async fn main() -> std::io::Result<()> {
             .wrap(middleware::Logger::default())
             .configure(config::app::config_services)
     })
-    .bind_uds("/tmp/actix-uds.socket")?
+    .bind("127.0.0.1:8000")?
     .run()
     .await
 }

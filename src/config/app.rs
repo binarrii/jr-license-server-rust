@@ -1,9 +1,9 @@
 use crate::handler::*;
 use actix_web::web;
 
-pub fn config_services(cfg: &mut web::ServiceConfig) {
+pub fn config_services(scfg: &mut web::ServiceConfig) {
     // info!("Configurating routes...");
-    cfg.service(web::resource("/").route(web::get().to(index_handler::index)))
+    scfg.service(web::resource("/").route(web::get().to(index_handler::index)))
         .service(
             web::scope("/jrebel")
                 .service(
