@@ -1,8 +1,9 @@
-use crate::handler::*;
 use actix_web::web;
+use log::info;
+
+use crate::handler::*;
 
 pub fn config_services(scfg: &mut web::ServiceConfig) {
-    // info!("Configurating routes...");
     scfg.service(web::resource("/").route(web::get().to(index_handler::index)))
         .service(
             web::scope("/jrebel")
@@ -45,5 +46,4 @@ pub fn config_services(scfg: &mut web::ServiceConfig) {
                         .route(web::post().to(leases_handler::lease))
                 )
         );
-    
 }
