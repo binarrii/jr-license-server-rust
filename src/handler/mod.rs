@@ -15,12 +15,10 @@ pub struct Resp<T: Serialize> {
     data: Option<T>,
 }
 
-impl<T> Resp<T> where T: Serialize {
-    fn success(d: T) -> Self {
-        Resp { code: 0, msg: "ok", data: Some(d) }
-    }
+fn success<T: Serialize>(d: T) -> Resp<T> {
+    Resp { code: 0, msg: "ok", data: Some(d) }
+}
 
-    fn failure(s: &'static str) -> Self {
-        Resp { code: -1, msg: s, data: None }
-    }
+fn failure(s: &'static str) -> Resp<()> {
+    Resp { code: -1, msg: s, data: None }
 }

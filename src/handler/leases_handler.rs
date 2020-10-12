@@ -4,7 +4,7 @@ use actix_web::{HttpResponse, web};
 use serde::Deserialize;
 use serde_json::json;
 
-use crate::handler::Resp;
+use super::failure;
 
 #[allow(non_snake_case)]
 #[derive(Deserialize)]
@@ -20,11 +20,11 @@ pub struct FormData {
 pub async fn lease(params: web::Form<FormData>) -> HttpResponse {
     match params.deref() {
         FormData { username: None, .. } =>
-            HttpResponse::Ok().json(Resp::<()>::failure("username can not be null")),
+            HttpResponse::Ok().json(failure("username can not be null")),
         FormData { randomness: None, .. } =>
-            HttpResponse::Ok().json(Resp::<()>::failure("randomness can not be null")),
+            HttpResponse::Ok().json(failure("randomness can not be null")),
         FormData { guid: None, .. } =>
-            HttpResponse::Ok().json(Resp::<()>::failure("guid can not be null")),
+            HttpResponse::Ok().json(failure("guid can not be null")),
         FormData { .. } =>
             HttpResponse::Ok().json(json!({
                 "company": params.username,
