@@ -28,20 +28,15 @@ use openssl::hash::MessageDigest;
 fn main() {
     let key = std::fs::read_to_string("KEY").expect("Key file not found");
     let der = base64::decode(key.replace("\n", "")).expect("Invalid key file");
+    let pkey = openssl::pkey::PKey::private_key_from_der(&der).unwrap();
 
-    let result = openssl::pkey::PKey::private_key_from_der(&der);
-    match result {
-        Ok(pkey) => {
-            let data = "VqlviUKd5es=;H2ulzLlh7E0=;xkkhJCgsum/uYQ2k/E3Kx71vE4t7uOpnMx6eYkdBxjc=;false".as_bytes();
+    let data = "VqlviUKd5es=;H2ulzLlh7E0=;xkkhJCgsum/uYQ2k/E3Kx71vE4t7uOpnMx6eYkdBxjc=;false".as_bytes();
 
-            let mut  signer = openssl::sign::Signer::new(MessageDigest::sha1(), pkey.as_ref()).unwrap();
-            signer.update(data).unwrap();
-            let signature = signer.sign_to_vec().unwrap();
-            let signstr = base64::encode(signature);
+    let mut signer = openssl::sign::Signer::new(MessageDigest::sha1(), pkey.as_ref()).unwrap();
+    signer.update(data).unwrap();
 
-            println!("{}", signstr)
-        },
-        Err(e) => e.errors().iter().for_each(|x| println!("{}", x))
-    }
+    let sign_vec = signer.sign_to_vec().unwrap();
+    let sign_str = base64::encode(sign_vec);
 
+    println!("{}", sign_str)
 }
