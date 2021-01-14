@@ -29,6 +29,7 @@ pub mod ping_handler;
 pub struct FormData {
     product: String,
     username: Option<String>,
+    userName: Option<String>,
     randomness: Option<String>,
     guid: Option<String>,
     offline: Option<bool>,
