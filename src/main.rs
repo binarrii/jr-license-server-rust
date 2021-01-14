@@ -5,7 +5,7 @@ extern crate lazy_static;
 
 use actix_web::{App, HttpServer, middleware};
 
-use handler::{index_handler, leases_handler, ticket_handler, validate_handler};
+use handler::*;
 
 mod config;
 mod handler;
@@ -27,6 +27,7 @@ async fn main() -> std::io::Result<()> {
             .service(ticket_handler::obtain_ticket)
             .service(ticket_handler::release_ticket)
             .service(validate_handler::validate)
+            .service(ping_handler::ping)
     })
     .bind("127.0.0.1:10017")?
     .run()
