@@ -1,5 +1,5 @@
 [package]
-name = "jr-license-server"
+name = "jr-license-server-rust"
 version = "0.1.0"
 authors = ["dupp <dupp@wasu.com>"]
 edition = "2018"
