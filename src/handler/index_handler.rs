@@ -1,5 +1,6 @@
 use actix_web::HttpRequest;
 
+#[get("/")]
 pub async fn index(_req: HttpRequest) -> &'static str {
     r"
     <h1>Hello,This is a Jrebel & JetBrains License Server!</h1>

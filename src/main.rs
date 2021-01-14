@@ -1,42 +1,34 @@
-// use actix_web::{middleware, App, HttpServer};
-//
-// mod config;
-// mod handler;
-// mod util;
-//
-// #[actix_web::main]
-// // #[cfg(unix)]
-// async fn main() -> std::io::Result<()> {
-//     ::std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
-//     env_logger::init();
-//
-//     HttpServer::new(|| {
-//         App::new()
-//             // enable logger - always register actix-web Logger middleware last
-//             .wrap(middleware::Logger::default())
-//             .configure(config::app::config_services)
-//     })
-//     .bind("127.0.0.1:8000")?
-//     .run()
-//     .await
-// }
+#[macro_use]
+extern crate actix_web;
+#[macro_use]
+extern crate lazy_static;
 
-extern crate openssl;
+use actix_web::{App, HttpServer, middleware};
 
-use openssl::hash::MessageDigest;
+use handler::{index_handler, leases_handler, ticket_handler, validate_handler};
 
-fn main() {
-    let key = std::fs::read_to_string("PKCS8KEY").expect("Key file not found");
-    let der = base64::decode(key.replace("\n", "")).expect("Invalid key file");
-    let pkey = openssl::pkey::PKey::private_key_from_der(&der).unwrap();
+mod config;
+mod handler;
+mod util;
 
-    let data = "VqlviUKd5es=;H2ulzLlh7E0=;xkkhJCgsum/uYQ2k/E3Kx71vE4t7uOpnMx6eYkdBxjc=;false".as_bytes();
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    ::std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
+    env_logger::init();
 
-    let mut signer = openssl::sign::Signer::new(MessageDigest::sha1(), pkey.as_ref()).unwrap();
-    signer.update(data).unwrap();
-
-    let sign_vec = signer.sign_to_vec().unwrap();
-    let sign_str = base64::encode(sign_vec);
-
-    println!("{}", sign_str)
+    HttpServer::new(|| {
+        App::new()
+            .wrap(middleware::Logger::default())
+            .service(index_handler::index)
+            .service(leases_handler::jrebel_lease)
+            .service(leases_handler::jrebel_lease_1)
+            .service(leases_handler::agent_lease)
+            .service(leases_handler::agent_lease_1)
+            .service(ticket_handler::obtain_ticket)
+            .service(ticket_handler::release_ticket)
+            .service(validate_handler::validate)
+    })
+    .bind("127.0.0.1:10017")?
+    .run()
+    .await
 }
