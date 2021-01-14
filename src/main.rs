@@ -26,7 +26,7 @@ extern crate openssl;
 use openssl::hash::MessageDigest;
 
 fn main() {
-    let key = std::fs::read_to_string("KEY").expect("Key file not found");
+    let key = std::fs::read_to_string("PKCS8KEY").expect("Key file not found");
     let der = base64::decode(key.replace("\n", "")).expect("Invalid key file");
     let pkey = openssl::pkey::PKey::private_key_from_der(&der).unwrap();
 
