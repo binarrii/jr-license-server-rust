@@ -17,7 +17,7 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
     dotenv::dotenv().ok();
 
-    let mut server = HttpServer::new(|| {
+    let server = HttpServer::new(|| {
         App::new()
             .wrap(middleware::Logger::default())
             .service(index_handler::index)
@@ -31,20 +31,13 @@ async fn main() -> std::io::Result<()> {
             .service(ping_handler::ping)
     });
 
-    let mut unbinded = true;
-    if let Ok(addr) = std::env::var("UDS") {
-        server = server.bind_uds(addr.trim_start_matches("unix:"))?;
-        unbinded = false;
+    // @formatter:off
+    match std::env::var("listen") {
+        Ok(addr) => server.bind(addr)?,
+        Err(_) => server.bind("127.0.0.1:10017")?
     }
-
-    if let Ok(addr) = std::env::var("BIND") {
-        server = server.bind(addr)?;
-        unbinded = false;
-    }
-
-    if unbinded {
-        server = server.bind("127.0.0.1:10017")?
-    }
-
-    server.run().await
+    .bind_uds("/var/run/jr-license-server.sock")?
+    .run()
+    .await
+    // @formatter:on
 }
