@@ -13,10 +13,11 @@ mod util;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    ::std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
+    std::env::set_var("RUST_LOG", "actix_server=info,actix_web=info");
     env_logger::init();
+    dotenv::dotenv().ok();
 
-    HttpServer::new(|| {
+    let mut server = HttpServer::new(|| {
         App::new()
             .wrap(middleware::Logger::default())
             .service(index_handler::index)
@@ -28,8 +29,17 @@ async fn main() -> std::io::Result<()> {
             .service(ticket_handler::release_ticket)
             .service(validate_handler::validate)
             .service(ping_handler::ping)
-    })
-    .bind("127.0.0.1:10017")?
-    .run()
-    .await
+    });
+
+    if let Ok(addr) = std::env::var("UDS") {
+        server = server.bind_uds(addr.trim_start_matches("unix:"))?;
+    }
+
+    if let Ok(addr) = std::env::var("BIND") {
+        server = server.bind(addr)?
+    } else {
+        server = server.bind("127.0.0.1:10017")?
+    }
+
+    server.run().await
 }
