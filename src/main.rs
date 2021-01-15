@@ -33,9 +33,9 @@ async fn main() -> std::io::Result<()> {
 
     // @formatter:off
     match std::env::var("listen") {
-        Ok(addr) => server.bind(addr)?,
-        Err(_) => server.bind("127.0.0.1:10017")?
-    }
+        Ok(addr) => server.bind(addr),
+        Err(_) => server.bind("127.0.0.1:10017")
+    }?
     .bind_uds("/var/run/jr-license-server.sock")?
     .run()
     .await
