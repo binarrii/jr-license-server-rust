@@ -31,13 +31,18 @@ async fn main() -> std::io::Result<()> {
             .service(ping_handler::ping)
     });
 
+    let mut unbinded = true;
     if let Ok(addr) = std::env::var("UDS") {
         server = server.bind_uds(addr.trim_start_matches("unix:"))?;
+        unbinded = false;
     }
 
     if let Ok(addr) = std::env::var("BIND") {
-        server = server.bind(addr)?
-    } else {
+        server = server.bind(addr)?;
+        unbinded = false;
+    }
+
+    if unbinded {
         server = server.bind("127.0.0.1:10017")?
     }
 
