@@ -32,12 +32,14 @@ async fn main() -> std::io::Result<()> {
     });
 
     // @formatter:off
-    match std::env::var("listen") {
+    let server = match std::env::var("listen") {
         Ok(addr) => server.bind(addr),
         Err(_) => server.bind("127.0.0.1:10017")
-    }?
-    .bind_uds("/var/run/jr-license-server.sock")?
-    .run()
-    .await
+    }?;
+
+    #[cfg(unix)]
+    server.bind_uds("/var/run/jr-license-server.sock")?;
+    
+    server.run().await
     // @formatter:on
 }
