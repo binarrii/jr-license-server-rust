@@ -1,7 +1,7 @@
 [package]
 name = "jr-license-server"
 version = "0.1.0"
-authors = ["dupp <dupp@wasu.com>"]
+authors = ["binarii<karl50018@gmail.com>"]
 edition = "2021"
 
 [dependencies]
