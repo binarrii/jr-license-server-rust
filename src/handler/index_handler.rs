@@ -1,8 +1,6 @@
-use actix_web::{HttpRequest, HttpResponse};
+use actix_web::HttpRequest;
 
 #[get("/")]
-pub async fn index(_req: HttpRequest) -> HttpResponse {
-    HttpResponse::Ok()
-        .content_type("text/html")
-        .body(r"<h3>Hello, This is a Jrebel & JetBrains License Server!</h3>")
+pub async fn index(_req: HttpRequest) -> &'static str {
+    "Hello, This is a Jrebel License Server !"
 }
