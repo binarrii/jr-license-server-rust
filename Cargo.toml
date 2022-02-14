@@ -19,12 +19,12 @@ hex = "0.4.2"
 dotenv = "0.15.0"
 
 [dependencies.openssl]
-version = "0.10.32"
+version = "0.10"
 features = ["vendored"]
 
 [profile.release]
+incremental = false
 panic = "abort"
 codegen-units = 1
 lto = true
-incremental = false
-opt-level = "s"
+opt-level = 3
