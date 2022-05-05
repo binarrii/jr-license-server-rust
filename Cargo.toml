@@ -23,6 +23,7 @@ version = "0.10"
 features = ["vendored"]
 
 [profile.release]
+strip = true
 incremental = false
 panic = "abort"
 codegen-units = 1
